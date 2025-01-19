@@ -1,0 +1,34 @@
+---
+import '../style/global.css'
+import Template from "./template.astro";
+
+const { frontmatter } = Astro.props;
+
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr';
+dayjs.locale('fr')
+
+const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
+---
+<style>
+.time {
+    color: rgba(5, 5, 5, 0.70);
+    font-size: 0.9em;
+}
+
+.articles {
+    p {
+        line-height: 2rem;
+    }
+}
+</style>
+
+<Template>
+    <div class="blog">
+        <p class="time">{publicationDate}</p>
+        <h1>{frontmatter.title}</h1>
+        <div class="articles">
+            <slot/>
+        </div>
+    </div>
+</Template>

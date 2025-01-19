@@ -1,16 +1,29 @@
 ---
-
+import Template from "../layout/template.astro";
+import BlogPreview from "../components/BlogPreview.astro";
+const allPosts = Object.values(import.meta.glob('./posts/*.md', {eager: true}));
 ---
+<style>
+    .presentation {
+        border-radius: 0.5rem;
+        border: 1px solid #eaeaea;
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+        padding: 1rem;
+    }
+
+    .articles {
+        display: flex;
+        flex-direction: column;
+
+        min-width: 70vh;
+    }
+</style>
+<Template>
+    <h2>Derniers articles</h2>
+    <div class="articles">
+      {allPosts.map((post: any) => {
+        return <BlogPreview post={post.frontmatter} url={post.url}/>;
+      })}
+    </div>
+
+</Template>
