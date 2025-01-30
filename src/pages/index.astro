@@ -1,7 +1,7 @@
 ---
 import Template from "../layout/template.astro";
 import BlogPreview from "../components/BlogPreview.astro";
-const allPosts = Object.values(import.meta.glob('./posts/*.md', {eager: true}));
+const allPosts = Object.values(import.meta.glob('./posts/*.md', {eager: true})).filter((post: any) => post.frontmatter.published);
 ---
 <style>
     .presentation {

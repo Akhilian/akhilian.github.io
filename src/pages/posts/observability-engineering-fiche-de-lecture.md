@@ -3,9 +3,7 @@ layout: '../../layout/article.astro'
 title: '📚 Observability Engineering : Fiche de lecture'
 pubDate: 2025-01-13
 description: 'This is the first post of my new Astro blog.'
-image:
-  url: 'https://docs.astro.build/assets/rose.webp'
-  alt: 'The Astro logo on a dark background with a pink glow.'
+published: true
 tags: [ "astro", "blogging", "learning in public" ]
 ---
 
