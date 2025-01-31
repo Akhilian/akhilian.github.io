@@ -1,6 +1,24 @@
 ---
+import '../style/global.css'
+import Header from "../components/Header.astro";
+---
+<style>
+    body {
+        margin: 0;
+        padding: 0;
 
-import Header from "../components/Header.astro";---
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .content {
+        padding: 2rem;
+        max-width: 1024px;
+        margin: 0 auto;
+    }
+</style>
+
 <html lang="fr">
     <head>
         <meta charset="UTF-8"/>
@@ -13,8 +31,11 @@ import Header from "../components/Header.astro";---
         <!--<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">-->
     </head>
     <body>
-        <Header />
-        <div class="blog">
-        <slot/>
+        <Header/>
+        <div class="content">
+            <slot/>
+        </div>
+        <!-- 100% privacy-first analytics -->
+        <script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
     </body>
 </html>
