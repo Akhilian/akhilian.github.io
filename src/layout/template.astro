@@ -4,7 +4,8 @@ import Header from "../components/Header.astro";
 ---
 <style>
     body {
-        margin: 0;
+        margin: 0 auto;
+        max-width: 1024px;
         padding: 0;
 
         display: flex;
@@ -13,30 +14,28 @@ import Header from "../components/Header.astro";
     }
 
     .content {
+        display: flex;
+        flex-direction: column;
+
         padding: 2rem;
-        max-width: 1024px;
-        margin: 0 auto;
     }
 </style>
 
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8"/>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
-        <meta name="viewport" content="width=device-width"/>
-        <meta name="generator" content={Astro.generator}/>
-        <meta lang="fr"/>
-        <title>Adrien Saunier - Blog</title>
-        <!--<link rel="preconnect" href="https://fonts.googleapis.com">-->
-        <!--<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
-        <!--<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">-->
-    </head>
-    <body>
-        <Header/>
-        <div class="content">
-            <slot/>
-        </div>
-        <!-- 100% privacy-first analytics -->
-        <script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="generator" content={Astro.generator}/>
+    <meta lang="fr"/>
+    <title>Adrien Saunier - Blog</title>
+</head>
+<body>
+<Header/>
+<div class="content">
+    <slot/>
+</div>
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
 </html>

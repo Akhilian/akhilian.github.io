@@ -8,6 +8,8 @@ const isDev = import.meta.env.DEV;
 <style>
     .preview {
         display: flex;
+        flex-direction: column;
+
         justify-content: space-between;
     }
 
@@ -15,13 +17,18 @@ const isDev = import.meta.env.DEV;
         color: rgba(5, 5, 5, 0.70);
         font-size: 0.8em;
     }
+
+    @media screen and (min-width:640px){
+        .preview {
+            flex-direction: row;
+        }
+    }
 </style>
 
 <div class="preview">
-    {isDev && (published ? "(Publié ✅)" : "(Draft ✏️)")}
+    {isDev && (published ? (<span>(Publié ✅)</span>) : (<span>(Draft ✏️)</span>))}
     <a href={url}>
         <span>{title}</span>
     </a>
     <span class="date">{publicationDate}</span>
 </div>
-<!--<hr/>-->

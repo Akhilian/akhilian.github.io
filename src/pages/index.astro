@@ -17,8 +17,13 @@ const allPosts = Object
     .articles {
         display: flex;
         flex-direction: column;
+        gap: 1rem;
+    }
 
-        min-width: 70vh;
+    @media screen and (min-width:640px){
+        .articles {
+            gap: 0;
+        }
     }
 </style>
 <Template>
