@@ -1,0 +1,36 @@
+---
+const isDev = import.meta.env.DEV;
+const post = Astro.props.post;
+---
+<style>
+.check {
+    background-color: #F9F4EA;
+    border: 2px dashed #605F4B;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 5rem;
+}
+
+.check * {
+    background-color: #F9F4EA;
+}
+
+.check h2 {
+    margin: 0;
+}
+
+.check ul {
+    padding: 0 1rem;
+    margin: 1rem 0 0;
+}
+</style>
+
+{isDev && (
+<div class="check">
+    <h2>Check de l'article</h2>
+    <ul>
+        <li>Est publié : {post.published ? "(Publié ✅)" : "(Draft ✏️)"}</li>
+    </ul>
+</div>
+
+  )}

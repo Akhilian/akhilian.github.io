@@ -1,8 +1,9 @@
 ---
 import dayjs from "dayjs";
-const {post: {title, description, pubDate}, url} = Astro.props;
+const {post: {title, pubDate, published}, url} = Astro.props;
 
 const publicationDate = dayjs(pubDate).format('D MMM YYYY');
+const isDev = import.meta.env.DEV;
 ---
 <style>
     .preview {
@@ -17,6 +18,7 @@ const publicationDate = dayjs(pubDate).format('D MMM YYYY');
 </style>
 
 <div class="preview">
+    {isDev && (published ? "(Publié ✅)" : "(Draft ✏️)")}
     <a href={url}>
         <span>{title}</span>
     </a>

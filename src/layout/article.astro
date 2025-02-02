@@ -1,11 +1,12 @@
 ---
-import '../style/global.css'
 import Template from "./template.astro";
 
 const { frontmatter } = Astro.props;
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
+import ArticleCheck from "../components/ArticleCheck.astro";
+import Tag from "../components/Tag.astro";
 dayjs.locale('fr')
 
 const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
@@ -21,11 +22,18 @@ const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
         line-height: 1.5rem;
     }
 }
+
+.tags {
+    display: flex;
+    gap: 0.3rem;
+}
 </style>
 
 <Template>
-    <div class="blog">
+    <div>
+        <ArticleCheck post={frontmatter} />
         <p class="time">{publicationDate}</p>
+        <div class="tags">{frontmatter.tags.map((tag) => (<Tag>{tag}</Tag>))}</div>
         <h1>{frontmatter.title}</h1>
         <div class="articles">
             <slot/>

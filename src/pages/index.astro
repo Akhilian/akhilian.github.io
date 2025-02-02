@@ -1,7 +1,10 @@
 ---
-import Template from "../layout/template.astro";
 import BlogPreview from "../components/BlogPreview.astro";
-const allPosts = Object.values(import.meta.glob('./posts/*.md', {eager: true})).filter((post: any) => post.frontmatter.published);
+import Template from "../layout/template.astro";
+const isDev = import.meta.env.DEV;
+const allPosts = Object
+  .values(import.meta.glob('./posts/*.md', {eager: true}))
+  .filter((post: any) => post.frontmatter.published || isDev);
 ---
 <style>
     .presentation {
@@ -21,9 +24,11 @@ const allPosts = Object.values(import.meta.glob('./posts/*.md', {eager: true})).
 <Template>
     <h2>Derniers articles</h2>
     <div class="articles">
+      {allPosts.length === 0 && <p>Aucun article pour le moment.</p>}
       {allPosts.map((post: any) => {
-        return <BlogPreview post={post.frontmatter} url={post.url}/>;
+        return (
+                <BlogPreview post={post.frontmatter} url={post.url}/>
+        );
       })}
     </div>
-
 </Template>
