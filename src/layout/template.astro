@@ -1,6 +1,8 @@
 ---
 import '../style/global.css'
 import Header from "../components/Header.astro";
+
+const { description } = Astro.props;
 ---
 <style>
     body {
@@ -27,6 +29,9 @@ import Header from "../components/Header.astro";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="generator" content={Astro.generator}/>
+    {description && (
+        <meta name="description" content={description}/>
+    )}
     <meta lang="fr"/>
     <title>Adrien Saunier - Blog</title>
 </head>

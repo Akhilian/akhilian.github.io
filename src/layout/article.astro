@@ -29,7 +29,7 @@ const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
 }
 </style>
 
-<Template>
+<Template description={frontmatter.description}>
     <div>
         <ArticleCheck post={frontmatter} />
         <p class="time">{publicationDate}</p>

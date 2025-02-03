@@ -4,6 +4,9 @@ import Template from "../layout/template.astro";
 const isDev = import.meta.env.DEV;
 const allPosts = Object
   .values(import.meta.glob('./posts/*.md', {eager: true}))
+  .sort((a: any, b: any) => {
+      return new Date(b.frontmatter.pubDate) - new Date(a.frontmatter.pubDate);
+  })
   .filter((post: any) => post.frontmatter.published || isDev);
 ---
 <style>

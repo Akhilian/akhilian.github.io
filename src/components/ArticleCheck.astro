@@ -29,7 +29,8 @@ const post = Astro.props.post;
 <div class="check">
     <h2>Check de l'article</h2>
     <ul>
-        <li>Est publié : {post.published ? "(Publié ✅)" : "(Draft ✏️)"}</li>
+        <li><strong>Est publié :</strong> {post.published ? "(Publié ✅)" : "(Draft ✏️)"}</li>
+        <li><strong>A une description :</strong> {post.description}</li>
     </ul>
 </div>
 
