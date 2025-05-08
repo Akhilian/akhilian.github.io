@@ -1,6 +1,7 @@
 ---
 layout: '../../layout/article.astro'
 title: 'Trois semaines avec Cursor AI : entre promesses et agacement'
+description: 'Un retour d’expérience sur l’utilisation de Cursor AI, un éditeur de code augmenté par l’IA. Entre promesses et agacement, découvrez les forces et faiblesses de cet outil.'
 pubDate: 2025-04-20
 published: true
 tags: ['IA', 'Cursor AI', 'Développement']
