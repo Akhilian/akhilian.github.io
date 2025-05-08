@@ -2,7 +2,7 @@
 ---
 <style>
     header {
-        padding: 2rem;
+        padding: 2rem 2rem 0;
     }
 
     p {
@@ -11,16 +11,33 @@
         margin: 0;
     }
 
+    s {
+        font-size: 1.5rem;
+    }
+
     .contact {
-        padding: 2rem 0;
+        padding-bottom: 2rem;
 
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
 
         img {
-            width: 3rem;
-            height: 3rem;
+            width: 8rem;
+            height: 8rem;
         }
+
+        @media only screen and (min-width: 600px) {
+            flex-direction: row;
+
+            img {
+                width: 3rem;
+                height: 3rem;
+            }
+        }
+
+        align-items: center;
+        gap: 1rem;
 
         .networks {
             display: flex;
@@ -63,8 +80,7 @@
         </div>
     </div>
 
-    <p>Hello 👋<br />Je m'appelle Adrien.<br/>J'aime écrire du code pour construire des produits.</p>
-    <p>De temps en temps, j'écris des trucs.</p>
+    <p style="margin-bottom: 1rem;">Hello 👋. Moi, c'est Adrien.</p>
 </header>
 
 
