@@ -3,7 +3,7 @@ layout: '../../layout/article.astro'
 title: '📚 Observability Engineering : Fiche de lecture'
 pubDate: 2025-01-13
 description: 'This is the first post of my new Astro blog.'
-published: false
+published: true
 tags: [ "observability", "lecture"]
 ---
 
