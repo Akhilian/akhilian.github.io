@@ -14,14 +14,14 @@ Depuis trois semaines, je code avec Cursor AI, un éditeur "augmenté par l’IA
 
 Dans cet article, je partage mes observations en mode vibe coding, sans filtre. Pas un test exhaustif, mais un retour pragmatique sur ce que ça change, ce que ça casse, et les questions que ça ouvre.
 
-## Un copilote qui écrit beaucoup… parfois trop
+### Un copilote qui écrit beaucoup… parfois trop
 Premier constat : Cursor génère du code. **Beaucoup**. Presque trop.
 
 Il complète, extrapole, suggère. C’est impressionnant, mais pas toujours pertinent. Il m’est arrivé de voir l’éditeur installer une dépendance… puis l’oublier quelques minutes plus tard. Ou la réinstaller, sans explication. Résultat : du bruit dans le package.json, des erreurs au runtime, et cette désagréable sensation de manque de contrôle.
 
 Ce n’est pas qu’un bug technique. C’est un problème de confiance.
 
-## Une vélocité artificielle, un feedback loop frustrant
+### Une vélocité artificielle, un feedback loop frustrant
 Cursor détecte des duplications, propose de les factoriser, parfois avec brio. Mais chaque modification déclenche une phase de « réflexion IA », puis une autre pour « appliquer les changements », et encore une pour « sauvegarder ».
 
 **Ce qui donne :**
@@ -30,7 +30,7 @@ Tu proposes un changement → tu attends → l’IA mouline → tu patientes →
 
 Résultat : une expérience morcelée, avec une appli souvent cassée après des modifications IA, des reverts aléatoires, et des features qui disparaissent sans prévenir. J’ai passé plus de temps à observer des « preview » qu’à coder réellement.
 
-## Graphisme, terminal & monorepos : l’IA a ses angles morts
+### Graphisme, terminal & monorepos : l’IA a ses angles morts
 Si vous confiez à Cursor la création d’un design ou d’une interface, attendez-vous à des résultats… disons, discutables.
 Le goût graphique de l’outil est franchement douteux, sauf si vous aimez les UI style années 2010.
 
@@ -38,7 +38,7 @@ Côté terminal, Cursor semble souvent perdu. Il perd le contexte dès qu’on e
 
 Idem pour les monorepos : le lien entre les projets est difficile à maintenir, et l’IA fait rapidement des raccourcis risqués. Faire la distinction entre les différents projets d’un monorepo est un vrai défi pour elle, surtout si les technologies sont variées (NodeJs & Terraform par exemple).
 
-## L’importance du guidage : deux expériences très différentes
+### L’importance du guidage : deux expériences très différentes
 
 J’ai tenté deux approches :
 
@@ -49,7 +49,7 @@ J’ai tenté deux approches :
 
 Mieux encore : si je l’interrompais pour corriger un point, il reprenait le fil là où on s’était arrêté. On aimerait que ça soit tout le temps le cas.
 
-## Quand il bricole un Helm chart… mais utilise une version de 2021
+### Quand il bricole un Helm chart… mais utilise une version de 2021
 
 Autre test : génération d’un Helm Chart umbrella. Le code était globalement bon, mais il a utilisé une version de chart obsolète (5.55) alors que j'avais besoin de la 7.18.
 
@@ -61,7 +61,7 @@ Malgré tout, Cursor peut être utile, notamment pour :
 * Réécrire/refactoriser du code verbeux 
 * Réagir rapidement quand il est guidé avec précision
 
-# En conclusion: une IA pas encore dev-friendly par défaut.
+## En conclusion: une IA pas encore dev-friendly par défaut.
 
 Cursor est un outil prometteur, mais encore immature pour une utilisation sereine en environnement de production. Il a besoin :
 * d’un meilleur contexte global (pour suivre une logique de repo ou de projet)

@@ -2,12 +2,10 @@
 layout: '../../layout/article.astro'
 title: '📚 Observability Engineering : Fiche de lecture'
 pubDate: 2025-01-13
-description: 'This is the first post of my new Astro blog.'
+description: 'Fiche de lecture du livre « Observability Engineering » de Charity Majors, Liz Fong-Jones et George Miranda : ce que le livre promet, ce que j’en ai retenu et ce que j’ai aimé.'
 published: true
 tags: [ "observability", "lecture"]
 ---
-
-## What I've accomplished
 
 Une des choses qui me fascine le plus dans le secteur de l'informatique, c’est que celui-ci évolue constamment. Et qu’il
 le fait à grande vitesse.

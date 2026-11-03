@@ -30,7 +30,7 @@ permettront de protéger les utilisateurs en cas d’incident.
 Vous l’aurez compris, dans cet article, nous allons parler de gestion d’incident.
 Plus précisément, nous allons parler de **_generic mitigations_**.
 
-# Incident, résolution et mitigation
+## Incident, résolution et mitigation
 
 Puisque nous allons parler de gestion d’incident, commençons par du vocabulaire.
 
@@ -65,7 +65,7 @@ de personnes de se connecter soudainement.
 
 Il vaut mieux avoir quelques réponses prévues dans sa besace, pour réagir **rapidement** et en **toute sécurité**.
 
-## Les “generic mitigations”
+### Les “generic mitigations”
 
 Une _generic mitigation_, c’est une **mitigation prévue** qui vise à réagir **rapidement** à une large variété de pannes
 qui pourraient impacter nos utilisateurs et dégénérer en incident.
@@ -80,13 +80,13 @@ faudra
 malgré tout identifier la cause du problème, trouver une solution et la mettre en place, mais elle permettra d’épargner
 nos utilisateurs durant l’intervalle.
 
-# Zoom sur 4 types de generic mitigation
+## Zoom sur 4 types de generic mitigation
 
 Pour cet article, je vous propose de détailler quatre exemples de generic mitigation, qui m’ont été bien utiles par le
 passé. Ce ne sont que quatre exemples, il existe plein d’autres façons d’imaginer des mitigations, gardez en tête que la
 liste n’est pas exhaustive.
 
-## Rollback
+### Rollback
 
 Cette mitigation est probablement la plus commune de toutes. Si automatiser le processus de déploiement d’une nouvelle
 version est maintenant une pratique assez commune, le processus de retour à la version précédente n’est pas toujours
@@ -105,7 +105,7 @@ Le risque : proposer une solution basée sur une compréhension partielle et par
 - Essayer de réduire la taille des changements. Revenir en arrière sur quelques jours de travail n’est pas aussi
   impactant que quelques semaines, et permet une relative sérénité.
 
-## Schéma rollback
+### Schéma rollback
 
 Cette mitigation est une variante assez délicate de la précédente. Lorsque le logiciel évolue, la structure de nos bases
 de données peut évoluer en même temps (on parle de migration de base de données). Ces évolutions impliquent souvent deux
@@ -126,7 +126,7 @@ des
 downtime liés aux migrations de schéma des données. On retrouve certaines de ces techniques sous le terme de [Zero
 Downtime Deployment](https://blog.octo.com/zero-downtime-deployment).
 
-## Dégrader la qualité de service
+### Dégrader la qualité de service
 
 Une autre situation qui met parfois nos systèmes en échec, c’est quand ils doivent encaisser une charge plus importante
 que prévu ou que l’un des composants se met à moins bien fonctionner que d’ordinaire. Dans ces conditions, le service va
@@ -167,7 +167,7 @@ performance type stress test peuvent permettre de confirmer les hypothèses ou d
 En fonction des résultats, il s’agira d’identifier si une generic mitigation est possible ou si d’autres actions sont
 nécessaires.
 
-## Augmenter la taille du système (upsize)
+### Augmenter la taille du système (upsize)
 
 Historiquement, augmenter la taille de l’infrastructure était une opération longue et difficile, ce qui limitait notre
 capacité à faire croître le système en cas de besoin. Il n’était donc pas inhabituel de provisionner plus de capacités
@@ -204,7 +204,7 @@ la plateforme.
 
 En scalant une partie du système, nous n’avions fait que **déplacer la tension** sur une autre section du système.
 
-## Conclusion
+### Conclusion
 
 On sous-estime souvent notre besoin de préparation quand il s’agit de gérer un système en production. Puisqu’il n’est
 pas possible d’anticiper quelle sera la prochaine panne, on est souvent mal armé pour réagir quand celle-ci survient.
