@@ -11,10 +11,6 @@
         margin: 0;
     }
 
-    s {
-        font-size: 1.5rem;
-    }
-
     .contact {
         padding-bottom: 2rem;
 
@@ -48,6 +44,7 @@
             stroke: rgba(3, 9, 17, 0.5);
         }
 
+        a:focus-visible svg,
         svg:hover {
             stroke: rgba(3, 9, 17, 1);
         }
@@ -55,9 +52,9 @@
 </style>
 <header>
     <div class="contact">
-        <a href="/"><img src="/adrien_saunier.webp" alt="Adrien"/></a>
+        <a href="/" aria-label="Accueil du blog d'Adrien Saunier"><img src="/adrien_saunier.webp" alt="Portrait d'Adrien Saunier" width="210" height="210"/></a>
         <div class="networks">
-            <a href="https://www.linkedin.com/in/saunier-adrien" rel="external" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/saunier-adrien" rel="external" title="LinkedIn" aria-label="LinkedIn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                      class="lucide lucide-linkedin">
@@ -66,7 +63,7 @@
                     <circle cx="4" cy="4" r="2"/>
                 </svg>
             </a>
-            <a href="https://github.com/Akhilian/" rel="external" title="GitHub">
+            <a href="https://github.com/Akhilian/" rel="external" title="GitHub" aria-label="GitHub">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                      class="lucide lucide-github">
@@ -74,7 +71,7 @@
                     <path d="M9 18c-4.51 2-5-2-7-2"/>
                 </svg>
             </a>
-            <a href="/rss.xml" title="RSS Feed">
+            <a href="/rss.xml" title="RSS Feed" aria-label="RSS Feed">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rss"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
             </a>
         </div>
