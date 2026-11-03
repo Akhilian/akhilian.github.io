@@ -29,8 +29,8 @@ const allPosts = Object
         }
     }
 </style>
-<Template>
-    <h2>Derniers articles</h2>
+<Template description="Le blog d'Adrien Saunier : articles sur le développement, l'observabilité, le SRE et la gestion d'incidents.">
+    <h1>Derniers articles</h1>
     <div class="articles">
       {allPosts.length === 0 && <p>Aucun article pour le moment.</p>}
       {allPosts.map((post: any) => {

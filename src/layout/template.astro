@@ -2,9 +2,113 @@
 import '../style/global.css'
 import Header from "../components/Header.astro";
 
-const { description } = Astro.props;
+interface Props {
+    title?: string;
+    description?: string;
+    type?: 'website' | 'article';
+    pubDate?: Date | string;
+    tags?: string[];
+    noindex?: boolean;
+}
+
+const siteName = 'Adrien Saunier';
+const defaultDescription = "Le blog d'Adrien Saunier : articles sur le développement, l'observabilité, le SRE et la gestion d'incidents.";
+
+const {
+    title,
+    description = defaultDescription,
+    type = 'website',
+    pubDate,
+    tags = [],
+    noindex = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} | ${siteName}` : `${siteName} - Blog`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/adrien_saunier.webp', Astro.site);
+const isoDate = pubDate ? new Date(pubDate).toISOString() : undefined;
+
+const person = {
+    "@type": "Person",
+    "name": siteName,
+    "url": new URL('/', Astro.site).href,
+    "sameAs": [
+        "https://www.linkedin.com/in/saunier-adrien",
+        "https://github.com/Akhilian/",
+    ],
+};
+
+const jsonLd = type === 'article'
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": title,
+        "description": description,
+        "datePublished": isoDate,
+        "dateModified": isoDate,
+        "inLanguage": "fr-FR",
+        "keywords": tags.join(', '),
+        "url": canonical.href,
+        "mainEntityOfPage": canonical.href,
+        "image": ogImage.href,
+        "author": person,
+    }
+    : {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": `${siteName} - Blog`,
+        "url": new URL('/', Astro.site).href,
+        "description": description,
+        "inLanguage": "fr-FR",
+        "author": person,
+    };
 ---
-<style>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="generator" content={Astro.generator}/>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description}/>
+    <link rel="canonical" href={canonical.href}/>
+    {noindex && <meta name="robots" content="noindex, nofollow"/>}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="icon" type="image/png" sizes="64x64" href="/blogging.png"/>
+    <link rel="apple-touch-icon" href="/adrien_saunier.webp"/>
+    <link rel="alternate" type="application/rss+xml" title={`${siteName} - Blog`} href="/rss.xml"/>
+    <link rel="sitemap" href="/sitemap-index.xml"/>
+
+    <meta property="og:site_name" content={siteName}/>
+    <meta property="og:locale" content="fr_FR"/>
+    <meta property="og:type" content={type}/>
+    <meta property="og:title" content={title ?? `${siteName} - Blog`}/>
+    <meta property="og:description" content={description}/>
+    <meta property="og:url" content={canonical.href}/>
+    <meta property="og:image" content={ogImage.href}/>
+    {type === 'article' && isoDate && <meta property="article:published_time" content={isoDate}/>}
+    {type === 'article' && <meta property="article:author" content={siteName}/>}
+    {type === 'article' && tags.map((tag) => <meta property="article:tag" content={tag}/>)}
+
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content={title ?? `${siteName} - Blog`}/>
+    <meta name="twitter:description" content={description}/>
+    <meta name="twitter:image" content={ogImage.href}/>
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+</head>
+<body>
+<Header/>
+<main class="content">
+    <slot/>
+</main>
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
+
+<style is:global>
     body {
         margin: 0 auto;
         max-width: 1024px;
@@ -22,25 +126,3 @@ const { description } = Astro.props;
         padding: 0 2rem 2rem 2rem;
     }
 </style>
-
-<html lang="fr">
-<head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/blogging.png"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="generator" content={Astro.generator}/>
-    {description && (
-        <meta name="description" content={description}/>
-    )}
-    <meta lang="fr"/>
-    <title>Adrien Saunier - Blog</title>
-</head>
-<body>
-<Header/>
-<div class="content">
-    <slot/>
-</div>
-<!-- 100% privacy-first analytics -->
-<script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

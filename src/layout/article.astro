@@ -29,14 +29,14 @@ const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
 }
 </style>
 
-<Template description={frontmatter.description}>
-    <div>
+<Template title={frontmatter.title} description={frontmatter.description} type="article" pubDate={frontmatter.pubDate} tags={frontmatter.tags} noindex={!frontmatter.published}>
+    <article>
         <ArticleCheck post={frontmatter} />
-        <p class="time">{publicationDate}</p>
+        <p class="time"><time datetime={dayjs(frontmatter.pubDate).format('YYYY-MM-DD')}>{publicationDate}</time></p>
         <div class="tags">{frontmatter.tags.map((tag) => (<Tag>{tag}</Tag>))}</div>
         <h1>{frontmatter.title}</h1>
         <div class="articles">
             <slot/>
         </div>
-    </div>
+    </article>
 </Template>

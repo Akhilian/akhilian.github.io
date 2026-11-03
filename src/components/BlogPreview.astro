@@ -30,5 +30,5 @@ const isDev = import.meta.env.DEV;
     <a href={url}>
         <span>{title}</span>
     </a>
-    <span class="date">{publicationDate}</span>
+    <time class="date" datetime={dayjs(pubDate).format('YYYY-MM-DD')}>{publicationDate}</time>
 </div>
