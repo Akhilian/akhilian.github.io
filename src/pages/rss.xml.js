@@ -9,11 +9,9 @@ export async function GET(context) {
         .map((post) => ({
             title: post.frontmatter.title,
             description: post.frontmatter.description,
-            url: post.url,
-            date: post.frontmatter.pubDate,
+            link: post.url,
+            pubDate: new Date(post.frontmatter.pubDate),
         }))
-
-    console.log(allPosts);
 
     return rss({
         title: 'Adrien Saunier - Blog',
