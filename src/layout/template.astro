@@ -1,4 +1,7 @@
 ---
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/source-serif-4/opsz.css';
+import '@fontsource-variable/source-serif-4/opsz-italic.css';
 import '../style/global.css'
 import Header from "../components/Header.astro";
 
@@ -137,7 +140,7 @@ const jsonLd = type === 'article'
             min-height: 0;
         }
 
-        body.reader-page header {
+        body.reader-page > header {
             max-width: none;
             padding-inline: var(--reader-gutter);
         }
