@@ -1,0 +1,46 @@
+name: Dependabot - build et fusion automatique
+
+# Vérifie que le site se construit avec les nouvelles versions,
+# puis fusionne la PR Dependabot et redéploie le site.
+on:
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: dependabot-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+
+  auto-merge:
+    needs: build
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      PR_URL: ${{ github.event.pull_request.html_url }}
+    steps:
+      - name: Fusionner la PR
+        run: gh pr merge "$PR_URL" --squash --delete-branch
+      # Une fusion faite avec GITHUB_TOKEN ne déclenche pas le workflow
+      # de déploiement : on le lance explicitement.
+      - name: Redéployer le site
+        run: gh workflow run deploy.yml --ref main
