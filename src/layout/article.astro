@@ -12,9 +12,9 @@ dayjs.locale('fr')
 const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
 ---
 <style>
-.time {
+.article-head .time {
     color: var(--color-ink-muted);
-    font-size: 0.9em;
+    font-size: 0.9rem;
     margin: 0 0 0.5rem;
 }
 
@@ -26,6 +26,70 @@ const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
 
 .reader-bar {
     display: none;
+}
+
+/* Titre en lettres creuses qui se remplissent au passage du curseur
+   (les lettres sont créées par le script). */
+.article-head :global(.tw-char) {
+    position: relative;
+    color: var(--color-paper);
+    /* Contour dessiné par des ombres : il suit la silhouette des lettres
+       sans faire apparaître les tracés internes de la police variable. */
+    text-shadow:
+        0.025em 0 0 var(--color-ink),
+        -0.025em 0 0 var(--color-ink),
+        0 0.025em 0 var(--color-ink),
+        0 -0.025em 0 var(--color-ink),
+        0.018em 0.018em 0 var(--color-ink),
+        -0.018em 0.018em 0 var(--color-ink),
+        0.018em -0.018em 0 var(--color-ink),
+        -0.018em -0.018em 0 var(--color-ink);
+    transition: color 220ms ease-out, text-shadow 220ms ease-out;
+}
+
+.article-head :global(.tw-char.is-on) {
+    color: var(--color-ink);
+    text-shadow:
+        0.025em 0 0 transparent,
+        -0.025em 0 0 transparent,
+        0 0.025em 0 transparent,
+        0 -0.025em 0 transparent,
+        0.018em 0.018em 0 transparent,
+        -0.018em 0.018em 0 transparent,
+        0.018em -0.018em 0 transparent,
+        -0.018em -0.018em 0 transparent;
+}
+
+.article-head :global(.tw-char.is-last)::after {
+    content: '';
+    position: absolute;
+    top: 0.12em;
+    bottom: 0.02em;
+    right: -0.1em;
+    width: 0.07em;
+    z-index: 1;
+    background: var(--color-ink);
+}
+
+.article-head :global(.is-done .tw-char.is-last)::after {
+    animation: tw-blink 1s steps(1) infinite;
+}
+
+
+@keyframes tw-blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .article-head :global(.tw-char.is-last)::after {
+        display: none;
+    }
+
+    .article-head :global(.tw-char) {
+        transition: none;
+    }
 }
 
 /*
@@ -224,6 +288,51 @@ const publicationDate = dayjs(frontmatter.pubDate).format('D MMM YYYY');
                 <p class="time"><time datetime={dayjs(frontmatter.pubDate).format('YYYY-MM-DD')}>{publicationDate}</time></p>
                 <div class="tags">{frontmatter.tags.map((tag) => (<Tag>{tag}</Tag>))}</div>
                 <h1>{frontmatter.title}</h1>
+                <script is:inline>
+                    // Effet « le titre se remplit sous le curseur ». Exécuté juste après
+                    // le <h1>, avant le premier affichage : sans JavaScript ou avec les
+                    // animations réduites, le titre reste tel quel.
+                    (() => {
+                        const title = document.currentScript && document.currentScript.previousElementSibling;
+                        if (!title || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+                        const text = title.textContent.trim();
+                        const graphemes = typeof Intl.Segmenter === 'function'
+                            ? Array.from(new Intl.Segmenter('fr', { granularity: 'grapheme' }).segment(text), (part) => part.segment)
+                            : Array.from(text);
+
+                        // Les lettres sont toutes posées, en creux, dès le départ :
+                        // la mise en page ne bouge pas pendant le remplissage.
+                        const line = document.createElement('span');
+                        line.setAttribute('aria-hidden', 'true');
+                        const letters = graphemes.map((grapheme) => {
+                            const letter = document.createElement('span');
+                            letter.className = 'tw-char';
+                            letter.textContent = grapheme;
+                            line.appendChild(letter);
+                            return letter;
+                        });
+                        title.setAttribute('aria-label', text);
+                        title.replaceChildren(line);
+                        title.classList.add('is-typing');
+
+                        const pace = Math.min(60, 2400 / letters.length);
+                        let index = 0;
+                        const type = () => {
+                            if (index > 0) letters[index - 1].classList.remove('is-last');
+                            letters[index].classList.add('is-on', 'is-last');
+                            const typed = graphemes[index];
+                            index += 1;
+                            if (index === letters.length) {
+                                title.classList.add('is-done');
+                                return;
+                            }
+                            const pause = /[\s,:;.!?]/.test(typed) ? pace : 0;
+                            setTimeout(type, pace * (0.5 + Math.random()) + pause);
+                        };
+                        setTimeout(type, 450);
+                    })();
+                </script>
             </header>
             <slot/>
         </div>
