@@ -1,35 +1,331 @@
 ---
+import dayjs from "dayjs";
+import 'dayjs/locale/fr';
 import BlogPreview from "../components/BlogPreview.astro";
+import FillTitle from "../components/FillTitle.astro";
+import Tag from "../components/Tag.astro";
 import Template from "../layout/template.astro";
+import { readingTime } from "../utils/reading-time";
+
+dayjs.locale('fr');
+
 const isDev = import.meta.env.DEV;
-const allPosts = Object
+const posts = Object
   .values(import.meta.glob('./posts/*.md', {eager: true}))
-  .sort((a: any, b: any) => {
-      return new Date(b.frontmatter.pubDate) - new Date(a.frontmatter.pubDate);
-  })
-  .filter((post: any) => post.frontmatter.published || isDev);
+  .sort((a: any, b: any) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime())
+  .filter((post: any) => post.frontmatter.published || isDev)
+  .map((post: any) => ({
+      ...post.frontmatter,
+      url: post.url,
+      minutes: readingTime(post.rawContent()),
+      isoDate: dayjs(post.frontmatter.pubDate).format('YYYY-MM-DD'),
+      shortDate: dayjs(post.frontmatter.pubDate).format('D MMM YYYY'),
+  }));
+
+// La une : le dernier article en grand, les trois suivants dans la colonne
+// de droite, le reste rangé par année dans les archives.
+const [lead, ...others] = posts;
+
+// L'émoji en tête de titre garde ses couleurs : il ne prend pas le contour en creux.
+const splitEmoji = (title: string) => {
+  const match = title.match(/^(\p{Extended_Pictographic}\uFE0F?)\s*/u);
+  return match ? [match[1], title.slice(match[0].length)] : [null, title];
+};
+const briefs = others.slice(0, 3);
+const archives = Object.entries(
+  Object.groupBy(others.slice(3), (post: any) => String(dayjs(post.pubDate).year()))
+).sort(([a], [b]) => Number(b) - Number(a));
 ---
 <style>
-    .articles {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+    .masthead {
+        text-align: center;
     }
 
-    @media screen and (min-width:640px){
-        .articles {
+    .greeting {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        margin: 0 0 0.75rem;
+    }
+
+    .masthead-title {
+        font-size: clamp(3rem, 1.25rem + 6vw, 6.5rem);
+        line-height: 1;
+        letter-spacing: -0.015em;
+        margin: 0;
+    }
+
+    /* Le point orange qui ferme aussi chaque article. */
+    .masthead-title::after {
+        content: '';
+        display: inline-block;
+        width: 0.16em;
+        height: 0.16em;
+        margin-left: 0.06em;
+        border-radius: 50%;
+        background: var(--color-accent);
+    }
+
+    .ribbon {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        gap: 0.25rem 2rem;
+
+        margin-top: 1.25rem;
+        padding: 0.6rem 0;
+        border-top: 1px solid var(--color-rule);
+        border-bottom: 3px double var(--color-rule);
+
+        font-size: 0.9rem;
+        color: var(--color-ink-muted);
+    }
+
+    .ribbon p {
+        margin: 0;
+    }
+
+    .subtitle {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: 1.1rem;
+        color: var(--color-ink);
+    }
+
+    .front {
+        display: grid;
+        gap: 2.5rem;
+        margin-top: 2.5rem;
+    }
+
+    .lead :global(.lead-title) {
+        font-size: clamp(2.25rem, 1.5rem + 2.5vw, 3.4rem);
+        line-height: 1.12;
+        margin: 0.75rem 0 1.25rem;
+    }
+
+    .lead :global(.lead-title a),
+    .brief-title a {
+        text-decoration: none;
+    }
+
+    .lead :global(.lead-title a:hover) {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 0.12em;
+    }
+
+    .standfirst {
+        columns: 2 15rem;
+        column-gap: 2.5rem;
+        column-rule: 1px solid var(--color-column-rule);
+        margin: 0;
+
+        font-size: 1.125rem;
+        line-height: 1.6;
+        text-align: justify;
+        hyphens: auto;
+    }
+
+    /* Le titre vient d'abord dans le code ; à l'écran, les sujets passent au-dessus. */
+    .lead {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .lead .tags {
+        order: -1;
+    }
+
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        font-size: 0.9rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.25rem 1.25rem;
+        margin: 1.5rem 0 0;
+
+        font-size: 0.9rem;
+        color: var(--color-ink-muted);
+    }
+
+    .meta a {
+        color: var(--color-ink);
+        font-weight: 600;
+        text-underline-offset: 0.15em;
+    }
+
+    .draft {
+        color: var(--color-ink);
+        background: var(--color-tag);
+        padding: 0 0.3em;
+    }
+
+    .briefs {
+        border-top: 1px solid var(--color-rule);
+        padding-top: 1.5rem;
+    }
+
+    .brief + .brief {
+        border-top: 1px solid var(--color-column-rule);
+        padding-top: 1.5rem;
+    }
+
+    .brief {
+        padding-bottom: 1.5rem;
+    }
+
+    .brief-title {
+        font-size: 1.45rem;
+        line-height: 1.2;
+        margin: 0;
+        text-wrap: balance;
+        overflow-wrap: break-word;
+        min-width: 0;
+    }
+
+    .brief .meta {
+        margin: 0.5rem 0 0.75rem;
+    }
+
+    .brief-text {
+        margin: 0;
+        line-height: 1.55;
+        text-align: justify;
+        hyphens: auto;
+    }
+
+    /* Au survol, le titre se vide puis se remplit d'encre,
+       comme le titre d'un article qu'on ouvre. */
+    .brief-title a:hover,
+    .brief-title a:focus-visible {
+        animation: ink-fill 600ms ease-out;
+    }
+
+    .brief-title .emoji {
+        text-shadow: none;
+    }
+
+    @keyframes ink-fill {
+        from {
+            color: var(--color-paper);
+            text-shadow: var(--hollow-outline);
+        }
+        to {
+            color: var(--color-ink);
+            text-shadow: var(--hollow-outline-clear);
+        }
+    }
+
+    .archives {
+        margin-top: 3rem;
+        border-top: 3px double var(--color-rule);
+    }
+
+    .archives h2 {
+        margin: 1.5rem 0 0;
+    }
+
+    .archives h3 {
+        margin: 1.5rem 0 0.5rem;
+        color: var(--color-ink-muted);
+    }
+
+    .archive-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    @media screen and (min-width: 900px) {
+        .front {
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
             gap: 0;
+        }
+
+        .lead {
+            padding-right: 3rem;
+        }
+
+        .briefs {
+            border-top: 0;
+            border-left: 1px solid var(--color-column-rule);
+            padding: 0 0 0 3rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .brief-title a:hover,
+        .brief-title a:focus-visible {
+            animation: none;
         }
     }
 </style>
-<Template description="Le blog d'Adrien Saunier : articles sur le développement, l'observabilité, le SRE et la gestion d'incidents.">
-    <h1>Derniers articles</h1>
-    <div class="articles">
-      {allPosts.length === 0 && <p>Aucun article pour le moment.</p>}
-      {allPosts.map((post: any) => {
-        return (
-                <BlogPreview post={post.frontmatter} url={post.url}/>
-        );
-      })}
-    </div>
+<Template bodyClass="front-page" greeting={false}>
+    <header class="masthead">
+        <p class="greeting">Hello 👋. Moi, c’est Adrien.</p>
+        <h1 class="masthead-title">Carnet d’Adrien</h1>
+        <div class="ribbon">
+            <p class="subtitle">Notes de production</p>
+            <p>Développement, observabilité, SRE et gestion d’incidents</p>
+            {lead && <p>Dernière parution : <time datetime={lead.isoDate}>{dayjs(lead.pubDate).format('D MMMM YYYY')}</time></p>}
+        </div>
+    </header>
+
+    {!lead && <p>Aucun article pour le moment.</p>}
+
+    {lead && (
+        <div class="front">
+            <article class="lead">
+                <FillTitle as="h2" class="lead-title" text={lead.title} href={lead.url} />
+                <ul class="tags" aria-label="Sujets">{lead.tags.map((tag: string) => (<Tag>{tag}</Tag>))}</ul>
+                <p class="standfirst">{lead.description}</p>
+                <p class="meta">
+                    <time datetime={lead.isoDate}>{lead.shortDate}</time>
+                    <span>{lead.minutes} min de lecture</span>
+                    {!lead.published && <span class="draft">brouillon</span>}
+                    <a href={lead.url}>Lire l’article<span class="visually-hidden"> : {lead.title}</span></a>
+                </p>
+            </article>
+
+            {briefs.length > 0 && (
+                <aside class="briefs" aria-label="Articles précédents">
+                    {briefs.map((post: any) => (
+                        <article class="brief">
+                            <h3 class="brief-title"><a href={post.url}>{(([emoji, text]) => <>{emoji && <span class="emoji">{emoji} </span>}{text}</>)(splitEmoji(post.title))}</a></h3>
+                            <p class="meta">
+                                <time datetime={post.isoDate}>{post.shortDate}</time>
+                                <span>{post.minutes} min de lecture</span>
+                                {!post.published && <span class="draft">brouillon</span>}
+                            </p>
+                            <p class="brief-text">{post.description}</p>
+                        </article>
+                    ))}
+                </aside>
+            )}
+        </div>
+    )}
+
+    {archives.length > 0 && (
+        <section class="archives" aria-labelledby="archives-title">
+            <h2 id="archives-title">Archives</h2>
+            {archives.map(([year, items]) => (
+                <>
+                    <h3>{year}</h3>
+                    <div class="archive-list">
+                        {items!.map((post: any) => (<BlogPreview post={post} url={post.url}/>))}
+                    </div>
+                </>
+            ))}
+        </section>
+    )}
 </Template>

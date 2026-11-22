@@ -14,9 +14,9 @@ export async function GET(context) {
         }))
 
     return rss({
-        title: 'Adrien Saunier - Blog',
+        title: 'Carnet d’Adrien',
         // Champ `<description>` dans le fichier xml de sortie
-        description: "De temps en temps, j'écris des articles.",
+        description: "Les notes de production d’Adrien Saunier : développement, observabilité, SRE et gestion d’incidents.",
         // Extraire la propriété "site" de votre projet dans le contexte du point de terminaison.
         // https://docs.astro.build/fr/reference/api-reference/#site
         site: context.site,

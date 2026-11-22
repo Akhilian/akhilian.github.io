@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# cache et captures de la revue de design Hallmark
+.hallmark/

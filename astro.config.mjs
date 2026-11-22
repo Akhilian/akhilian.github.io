@@ -7,4 +7,8 @@ export default defineConfig({
     site: 'https://asaunier.dev',
     base: '',
     integrations: [sitemap()],
+    // Le CSS est petit : intégré à la page, il ne bloque plus le premier affichage.
+    build: {
+        inlineStylesheets: 'always',
+    },
 });
