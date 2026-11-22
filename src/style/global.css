@@ -1,23 +1,168 @@
-* {
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,Inter,sans-serif;
-    font-size: 16px;
-    line-height: 1.5rem;
+/* Hallmark · checked: 2026-11-22 · genre: editorial (inferred: a personal blog of long-form articles)
+ * floor: fixed 7a, 34, 48, 50 · finish: F1, F3, F26 · fixed: line-height of heads, inline code ink, focus ring · layout: articles in two columns by the owner's request
+ * structural: printed (77, 79, 44a, 49b, 58) · copy: verbatim (the emojis in titles and the greeting stay, by the owner's choice)
+ * built: the project · redesign: polish · v2.0.0 */
+/* Hallmark · waive 26b · not a form control, no aria-disabled anywhere · the blog has links only and ArticleCheck is a dev-only panel without a button */
+/* Hallmark · waive 49b · the wrapping links are article titles set as headings on the front page · a headline wraps like a headline, shortening it would change the owner's copy */
+/* Hallmark · dismissed 41 · --color-accent only fills decorative marks (caret, end dot, progress line, icon strokes) and never sits behind text, so it needs no accent-ink */
+/* Hallmark · answered F3 · .check h2 is a one-line dev-only panel title that never reaches the published blog */
+/* Hallmark · dismissed 34 · article.astro and template.astro are linted without global.css, which template.astro imports; article.astro renders through template.astro, which loads global.css: html and body compute overflow-x clip at 320 and 1440 */
+/* Hallmark · dismissed 50 · the article h1 takes the global h1 rule: overflow-wrap break-word and min-width 0 verified in the rendered page */
 
-    color: rgba(3, 9, 17, 0.92);
+:root {
+    --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+    --font-body: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Marge latérale et gouttière de la lecture plein écran, qui s'élargissent avec l'écran. */
+    --reader-gutter: clamp(2rem, 4vw, 5rem);
+    --reader-column-gap: clamp(3rem, 4.5vw, 5.5rem);
+
+    --color-paper: oklch(99.5% 0.004 250);
+    --color-ink: rgba(3, 9, 17, 0.92);
+    --color-ink-strong: rgba(3, 9, 17, 1);
+    --color-ink-muted: rgba(5, 5, 5, 0.70);
+    --color-icon: rgba(3, 9, 17, 0.5);
+    --color-rule: rgba(3, 9, 17, 0.92);
+    --color-column-rule: rgba(3, 9, 17, 0.15);
+    /* Les deux couleurs de la photo de profil : l'orange du fond et le jaune
+       du sweat. Réservées à de petites touches, jamais au texte courant. */
+    --color-accent: rgb(255, 79, 0);
+    --color-accent-soft: rgb(244, 186, 0);
+    --color-highlight: color-mix(in srgb, var(--color-accent-soft) 30%, var(--color-paper));
+    --color-tag: var(--color-highlight);
+    --color-code-bg: rgb(32, 40, 58);
+    --color-code-ink: oklch(94% 0.01 250);
+    --color-check-bg: #F9F4EA;
+    --color-check-border: #605F4B;
+    --color-focus: rgba(3, 9, 17, 1);
+
+    /* Contour des lettres « en creux », dessiné par des ombres : il suit la
+       silhouette des lettres sans les tracés internes de la police variable. */
+    --hollow-outline:
+        0.025em 0 0 var(--color-ink),
+        -0.025em 0 0 var(--color-ink),
+        0 0.025em 0 var(--color-ink),
+        0 -0.025em 0 var(--color-ink),
+        0.018em 0.018em 0 var(--color-ink),
+        -0.018em 0.018em 0 var(--color-ink),
+        0.018em -0.018em 0 var(--color-ink),
+        -0.018em -0.018em 0 var(--color-ink);
+    --hollow-outline-clear:
+        0.025em 0 0 transparent,
+        -0.025em 0 0 transparent,
+        0 0.025em 0 transparent,
+        0 -0.025em 0 transparent,
+        0.018em 0.018em 0 transparent,
+        -0.018em 0.018em 0 transparent,
+        0.018em -0.018em 0 transparent,
+        -0.018em -0.018em 0 transparent;
 }
 
+html,
 body {
-    background-color: white;
+    overflow-x: clip;
+}
+
+html {
+    scrollbar-color: var(--color-column-rule) transparent;
+}
+
+/* Police, taille et couleur sont posées une fois ici puis héritées :
+   le gras, l'italique ou un lien gardent la taille du texte qui les entoure. */
+body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+}
+
+a {
+    color: inherit;
+}
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Lien d'évitement : invisible jusqu'à ce qu'on y arrive au clavier. */
+.skip-link {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 10;
+    padding: 0.5rem 1rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule);
+    transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+    transform: none;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+}
+
+h1,
+h2 {
+    line-height: 1.22;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    min-width: 0;
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: clamp(2rem, 1.5rem + 2vw, 2.5rem);
     margin-top: 4rem;
 }
 
 h2 {
-    font-size: 1.5rem;
+    font-size: 1.85rem;
     margin-top: 3rem;
+}
+
+h3 {
+    font-size: 1.3rem;
+    line-height: 1.25;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+::selection {
+    background: var(--color-highlight);
+}
+
+a:hover {
+    text-decoration-color: var(--color-accent);
+}
+
+a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: 2px;
 }
 
 pre {
@@ -26,16 +171,64 @@ pre {
 }
 
 code, code * {
-    background-color: rgb(32, 40, 58);
+    font-family: var(--font-mono);
+    background-color: var(--color-code-bg);
+}
+
+:not(pre) > code {
+    color: var(--color-code-ink);
+    padding: 0.1em 0.35em;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
 }
 
 blockquote {
-    border-left: 1px solid black;
+    border-left: 1px solid var(--color-rule);
 
     margin: 2rem 0;
     padding: 0 0 0 2rem;
 }
 
-blockquote p {
+/* Titre qui se remplit sous le curseur (composant FillTitle). */
+.fill-title .tw-char {
+    position: relative;
+    color: var(--color-paper);
+    text-shadow: var(--hollow-outline);
+    transition: color 150ms ease-out, text-shadow 150ms ease-out;
 }
 
+.fill-title .tw-char.is-on {
+    color: var(--color-ink);
+    text-shadow: var(--hollow-outline-clear);
+}
+
+.fill-title .tw-char.is-last::after {
+    content: '';
+    position: absolute;
+    top: 0.12em;
+    bottom: 0.02em;
+    right: -0.1em;
+    width: 0.07em;
+    z-index: 1;
+    background: var(--color-accent);
+}
+
+.fill-title.is-done .tw-char.is-last::after {
+    animation: tw-blink 1s steps(1) infinite;
+}
+
+@keyframes tw-blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fill-title .tw-char.is-last::after {
+        display: none;
+    }
+
+    .fill-title .tw-char {
+        transition: none;
+    }
+}

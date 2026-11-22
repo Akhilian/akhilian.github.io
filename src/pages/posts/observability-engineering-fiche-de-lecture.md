@@ -35,7 +35,7 @@ Dans la préface, les auteur·ices se positionnent comme promoteurs de l’obser
 
 Ils observent notamment que la notion d’observabilité connaît une phase de popularité croissante depuis quelques années, mais souvent traitée comme un équivalent de monitoring ou de télémétrie.
 
-> With its rise in popularity, “observability” has been unfortunately mischaracterized as a synonym for “monitoring” or “system telemetry.”
+<blockquote lang="en"><p>With its rise in popularity, “observability” has been unfortunately mischaracterized as a synonym for “monitoring” or “system telemetry.”</p></blockquote>
 
 Le livre propose de redéfinir ce qu’est l’observabilité et de creuser les sujets suivants (traduction du livre) :
 
@@ -99,7 +99,7 @@ C’est cependant ignorer la dimension socio-technique de nos pratiques.
 
 Le livre insiste sur le fait que collecter ces données ne suffit pas pour atteindre de l’observabilité, même si c’est une étape obligatoire.
 
-> Observability is often mischaracterized as being achieved when you have “three pillars” of different telemetry data types, so we aren’t fans of that model.
+<blockquote lang="en"><p>Observability is often mischaracterized as being achieved when you have “three pillars” of different telemetry data types, so we aren’t fans of that model.</p></blockquote>
 
 Pourquoi se fier à notre intuition est risqué ?
 En cas d’incident, la réaction d’une équipe a tendance à s’appuyer sur pourra mettre en route sur deux biais cognitifs dangereux.

@@ -1,6 +1,12 @@
 ---
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/fraunces/opsz-italic.css';
+import '@fontsource-variable/source-serif-4/opsz.css';
+import '@fontsource-variable/source-serif-4/opsz-italic.css';
 import '../style/global.css'
 import Header from "../components/Header.astro";
+import frauncesLatin from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import sourceSerifLatin from '@fontsource-variable/source-serif-4/files/source-serif-4-latin-opsz-normal.woff2?url';
 
 interface Props {
     title?: string;
@@ -9,10 +15,13 @@ interface Props {
     pubDate?: Date | string;
     tags?: string[];
     noindex?: boolean;
+    bodyClass?: string;
+    greeting?: boolean;
 }
 
-const siteName = 'Adrien Saunier';
-const defaultDescription = "Le blog d'Adrien Saunier : articles sur le développement, l'observabilité, le SRE et la gestion d'incidents.";
+const siteName = 'Carnet d’Adrien';
+const authorName = 'Adrien Saunier';
+const defaultDescription = "Carnet d’Adrien, les notes de production d’Adrien Saunier : développement, observabilité, SRE et gestion d’incidents.";
 
 const {
     title,
@@ -21,17 +30,21 @@ const {
     pubDate,
     tags = [],
     noindex = false,
+    bodyClass,
+    greeting = true,
 } = Astro.props;
 
-const fullTitle = title ? `${title} | ${siteName}` : `${siteName} - Blog`;
+const homeTitle = `${siteName} — Notes de production d’${authorName}`;
+const fullTitle = title ? `${title} | ${siteName}` : homeTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/adrien_saunier.webp', Astro.site);
 const isoDate = pubDate ? new Date(pubDate).toISOString() : undefined;
 
 const person = {
     "@type": "Person",
-    "name": siteName,
+    "name": authorName,
     "url": new URL('/', Astro.site).href,
+    "image": ogImage.href,
     "sameAs": [
         "https://www.linkedin.com/in/saunier-adrien",
         "https://github.com/Akhilian/",
@@ -52,11 +65,14 @@ const jsonLd = type === 'article'
         "mainEntityOfPage": canonical.href,
         "image": ogImage.href,
         "author": person,
+        "publisher": person,
+        "isPartOf": { "@type": "Blog", "name": siteName, "url": new URL('/', Astro.site).href },
     }
     : {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": `${siteName} - Blog`,
+        "name": siteName,
+        "alternateName": homeTitle,
         "url": new URL('/', Astro.site).href,
         "description": description,
         "inLanguage": "fr-FR",
@@ -71,36 +87,46 @@ const jsonLd = type === 'article'
     <meta name="generator" content={Astro.generator}/>
     <title>{fullTitle}</title>
     <meta name="description" content={description}/>
+    <meta name="author" content={authorName}/>
+    <meta name="color-scheme" content="light"/>
+    <meta name="theme-color" content="#fafdff"/>
+    <link rel="preload" href={frauncesLatin} as="font" type="font/woff2" crossorigin/>
+    <link rel="preload" href={sourceSerifLatin} as="font" type="font/woff2" crossorigin/>
     <link rel="canonical" href={canonical.href}/>
     {noindex && <meta name="robots" content="noindex, nofollow"/>}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
     <link rel="icon" type="image/png" sizes="64x64" href="/blogging.png"/>
     <link rel="apple-touch-icon" href="/adrien_saunier.webp"/>
-    <link rel="alternate" type="application/rss+xml" title={`${siteName} - Blog`} href="/rss.xml"/>
+    <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml"/>
     <link rel="sitemap" href="/sitemap-index.xml"/>
 
     <meta property="og:site_name" content={siteName}/>
     <meta property="og:locale" content="fr_FR"/>
     <meta property="og:type" content={type}/>
-    <meta property="og:title" content={title ?? `${siteName} - Blog`}/>
+    <meta property="og:title" content={title ?? homeTitle}/>
     <meta property="og:description" content={description}/>
     <meta property="og:url" content={canonical.href}/>
     <meta property="og:image" content={ogImage.href}/>
+    <meta property="og:image:width" content="210"/>
+    <meta property="og:image:height" content="210"/>
+    <meta property="og:image:alt" content={`Portrait d’${authorName}`}/>
     {type === 'article' && isoDate && <meta property="article:published_time" content={isoDate}/>}
-    {type === 'article' && <meta property="article:author" content={siteName}/>}
+    {type === 'article' && <meta property="article:author" content={authorName}/>}
     {type === 'article' && tags.map((tag) => <meta property="article:tag" content={tag}/>)}
 
     <meta name="twitter:card" content="summary"/>
-    <meta name="twitter:title" content={title ?? `${siteName} - Blog`}/>
+    <meta name="twitter:title" content={title ?? homeTitle}/>
     <meta name="twitter:description" content={description}/>
     <meta name="twitter:image" content={ogImage.href}/>
+    <meta name="twitter:image:alt" content={`Portrait d’${authorName}`}/>
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 </head>
-<body>
-<Header/>
-<main class="content">
+<body class={bodyClass}>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<Header greeting={greeting}/>
+<main class="content" id="contenu" tabindex="-1">
     <slot/>
 </main>
 <!-- 100% privacy-first analytics -->
@@ -119,10 +145,42 @@ const jsonLd = type === 'article'
         min-height: 100vh;
     }
 
+    /* La cible du lien d'évitement prend le focus sans contour. */
+    .content:focus {
+        outline: none;
+    }
+
     .content {
         display: flex;
         flex-direction: column;
 
         padding: 0 2rem 2rem 2rem;
+    }
+
+    /* Accueil : une page de journal, un peu plus large que le reste du site. */
+    body.front-page,
+    body.front-page > header {
+        max-width: 1200px;
+    }
+
+    /* Page d'article : toute la largeur et exactement la hauteur de l'écran. */
+    @media screen and (min-width: 900px) and (min-height: 600px) {
+        body.reader-page {
+            max-width: none;
+            width: 100%;
+            height: 100dvh;
+            min-height: 0;
+        }
+
+        body.reader-page > header {
+            max-width: none;
+            padding-inline: var(--reader-gutter);
+        }
+
+        body.reader-page .content {
+            flex: 1;
+            min-height: 0;
+            padding: 0;
+        }
     }
 </style>

@@ -1,0 +1,61 @@
+---
+/*
+ * Titre dont les lettres, posées en creux, se remplissent au passage d'un
+ * curseur d'écriture. Sans JavaScript ou avec les animations réduites, le
+ * titre s'affiche normalement. Les styles sont dans global.css (.fill-title).
+ */
+interface Props {
+    as?: 'h1' | 'h2';
+    text: string;
+    href?: string;
+    class?: string;
+}
+
+const { as: Heading = 'h1', text, href, class: className } = Astro.props;
+---
+<Heading class:list={['fill-title', className]}>{href ? <a href={href}>{text}</a> : text}</Heading>
+<script is:inline>
+    // Exécuté juste après le titre, avant le premier affichage.
+    (() => {
+        const heading = document.currentScript && document.currentScript.previousElementSibling;
+        if (!heading || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        // Pour un titre-lien, les lettres vont dans le lien pour qu'il reste cliquable.
+        const title = heading.querySelector('a') || heading;
+
+        const text = title.textContent.trim();
+        const graphemes = typeof Intl.Segmenter === 'function'
+            ? Array.from(new Intl.Segmenter('fr', { granularity: 'grapheme' }).segment(text), (part) => part.segment)
+            : Array.from(text);
+
+        // Les lettres sont toutes posées, en creux, dès le départ :
+        // la mise en page ne bouge pas pendant le remplissage.
+        const line = document.createElement('span');
+        line.setAttribute('aria-hidden', 'true');
+        const letters = graphemes.map((grapheme) => {
+            const letter = document.createElement('span');
+            letter.className = 'tw-char';
+            letter.textContent = grapheme;
+            line.appendChild(letter);
+            return letter;
+        });
+        title.setAttribute('aria-label', text);
+        title.replaceChildren(line);
+        heading.classList.add('is-typing');
+
+        const pace = Math.min(22, 800 / letters.length);
+        let index = 0;
+        const type = () => {
+            if (index > 0) letters[index - 1].classList.remove('is-last');
+            letters[index].classList.add('is-on', 'is-last');
+            const typed = graphemes[index];
+            index += 1;
+            if (index === letters.length) {
+                heading.classList.add('is-done');
+                return;
+            }
+            const pause = /[\s,:;.!?]/.test(typed) ? pace * 0.5 : 0;
+            setTimeout(type, pace * (0.5 + Math.random()) + pause);
+        };
+        setTimeout(type, 150);
+    })();
+</script>
