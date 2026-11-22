@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Dépendances du site (package.json + yarn.lock)
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Astro et ses intégrations sont mis à jour ensemble pour rester compatibles
+      astro:
+        patterns:
+          - "astro"
+          - "@astrojs/*"
+      autres:
+        patterns:
+          - "*"
+
+  # Actions utilisées dans .github/workflows
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      actions:
+        patterns:
+          - "*"
